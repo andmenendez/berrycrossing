@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>berry crossing</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Fraunces:opsz,wght,SOFT@9..144,600,100&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="bg"></div>
+
+  <audio id="music" src="audio/rainy-day.m4a" loop preload="metadata"></audio>
+
+  <div class="dock">
+    <nav id="controls" class="controls" aria-label="music controls">
+      <button id="restart" class="btn" aria-label="back to beginning" title="back to beginning">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <line x1="9" y1="9" x2="9" y2="23"/>
+          <polygon points="23,9 12.5,16 23,23"/>
+        </svg>
+      </button>
+  
+      <button id="back" class="btn" aria-label="back 15 seconds" title="back 15 seconds">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <polygon points="16,10 7,16 16,22"/>
+          <polygon points="26,10 17,16 26,22"/>
+        </svg>
+      </button>
+  
+      <button id="play" class="btn btn-play nudge" aria-label="play" title="play">
+        <svg class="icon-play" viewBox="0 0 32 32" aria-hidden="true">
+          <polygon points="11.5,8 25,16 11.5,24"/>
+        </svg>
+        <svg class="icon-pause" viewBox="0 0 32 32" aria-hidden="true">
+          <rect x="9.5" y="8" width="4.5" height="16" rx="2.25"/>
+          <rect x="18" y="8" width="4.5" height="16" rx="2.25"/>
+        </svg>
+      </button>
+  
+      <button id="forward" class="btn" aria-label="forward 15 seconds" title="forward 15 seconds">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <polygon points="6,10 15,16 6,22"/>
+          <polygon points="16,10 25,16 16,22"/>
+        </svg>
+      </button>
+  
+      <button id="next-bg" class="btn" aria-label="next picture" title="next picture">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <rect x="5.5" y="7.5" width="21" height="17" rx="4.5"/>
+          <circle cx="20.5" cy="13" r="2"/>
+          <path d="M6.5 21.5 C9.5 17 12.5 16.5 15.5 19.5 C18 17.5 21.5 17.5 25.5 21"/>
+        </svg>
+      </button>
+  
+      <button id="settings" class="btn btn-gear" aria-label="settings" title="settings">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <g class="teeth">
+            <circle cx="16" cy="6" r="3"/>
+            <circle cx="23.07" cy="8.93" r="3"/>
+            <circle cx="26" cy="16" r="3"/>
+            <circle cx="23.07" cy="23.07" r="3"/>
+            <circle cx="16" cy="26" r="3"/>
+            <circle cx="8.93" cy="23.07" r="3"/>
+            <circle cx="6" cy="16" r="3"/>
+            <circle cx="8.93" cy="8.93" r="3"/>
+          </g>
+          <circle class="body" cx="16" cy="16" r="9"/>
+          <ellipse class="eye" cx="13.3" cy="15" rx="1" ry="1.4"/>
+          <ellipse class="eye" cx="18.7" cy="15" rx="1" ry="1.4"/>
+          <path class="smile" d="M14.6 18.4 Q16 19.6 17.4 18.4"/>
+        </svg>
+      </button>
+    </nav>
+
+    <button id="collapse" class="toggle" aria-controls="controls" aria-expanded="true" aria-label="hide controls" title="hide controls">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <polyline points="7,10 12,15 17,10"/>
+      </svg>
+    </button>
+  </div>
+
+  <button id="fullscreen" class="fullscreen" aria-label="full screen" title="full screen">
+    <svg class="icon-enter" viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M6 12 V9 C6 7.3 7.3 6 9 6 H12"/>
+      <path d="M20 6 H23 C24.7 6 26 7.3 26 9 V12"/>
+      <path d="M26 20 V23 C26 24.7 24.7 26 23 26 H20"/>
+      <path d="M12 26 H9 C7.3 26 6 24.7 6 23 V20"/>
+    </svg>
+    <svg class="icon-exit" viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M12 6 V9 C12 10.7 10.7 12 9 12 H6"/>
+      <path d="M20 6 V9 C20 10.7 21.3 12 23 12 H26"/>
+      <path d="M26 20 H23 C21.3 20 20 21.3 20 23 V26"/>
+      <path d="M6 20 H9 C10.7 20 12 21.3 12 23 V26"/>
+    </svg>
+  </button>
+
+  <dialog id="modal" aria-labelledby="modal-title">
+    <form method="dialog" id="settings-form">
+      <svg class="bear" viewBox="0 0 48 40" aria-hidden="true">
+        <path d="M10 14 C6 13 5 7 9 5 C12 3.5 15 6 15.5 9 C20 6.5 28 6.5 32.5 9 C33 6 36 3.5 39 5 C43 7 42 13 38 14 C41 18 41 27 37 31 C32 36 16 36 11 31 C7 27 7 18 10 14 Z"/>
+        <ellipse cx="19" cy="21" rx="1.6" ry="2.4"/>
+        <ellipse cx="29" cy="21" rx="1.6" ry="2.4"/>
+      </svg>
+      <a class="artist" href="https://www.berrysoup.ca/" target="_blank" rel="noopener">
+        <svg class="palette" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 5.5 C9.5 5.5 5 10.2 5 16 C5 21.8 9.6 26.5 15 26.5 C17.2 26.5 17.8 25 17 23.6 C16.1 22 17 20.3 19 20.3 H21.5 C24.6 20.3 27 18 27 14.8 C27 9.5 22 5.5 16 5.5 Z"/>
+          <circle cx="10.6" cy="13.2" r="1.8"/>
+          <circle cx="15.8" cy="10.2" r="1.8"/>
+          <circle cx="21.2" cy="11.8" r="1.8"/>
+          <circle cx="10.4" cy="19.4" r="1.8"/>
+        </svg>
+        artist
+      </a>
+      <h1 id="modal-title">settings</h1>
+
+      <div class="setting">
+        <label for="interval">change picture every</label>
+        <div class="stepper">
+          <!-- autofocus so opening settings lands on the controls, not the artist link -->
+          <button type="button" class="step step-5" data-step="-5" aria-label="5 fewer minutes" autofocus>–5</button>
+          <button type="button" class="step" data-step="-1" aria-label="1 fewer minute">–</button>
+          <input id="interval" type="number" min="1" max="240" step="1" inputmode="numeric">
+          <button type="button" class="step" data-step="1" aria-label="1 more minute">+</button>
+          <button type="button" class="step step-5" data-step="5" aria-label="5 more minutes">+5</button>
+        </div>
+        <p class="unit">minutes</p>
+      </div>
+
+      <div class="setting">
+        <label class="switch">
+          <input id="keep-awake" type="checkbox" role="switch">
+          keep screen awake
+        </label>
+        <fieldset id="awake-timer" class="timer">
+          <label for="awake-minutes">stop keeping awake after</label>
+          <div class="stepper">
+            <button type="button" class="step step-5" data-step="-5" aria-label="5 fewer minutes">–5</button>
+            <button type="button" class="step" data-step="-1" aria-label="1 fewer minute">–</button>
+            <input id="awake-minutes" type="number" min="1" max="240" step="1" inputmode="numeric">
+            <button type="button" class="step" data-step="1" aria-label="1 more minute">+</button>
+            <button type="button" class="step step-5" data-step="5" aria-label="5 more minutes">+5</button>
+          </div>
+          <p class="unit">minutes</p>
+        </fieldset>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

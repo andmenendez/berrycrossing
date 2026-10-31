@@ -1,0 +1,413 @@
+:root {
+  --sky: #eaf2f5;
+  --ink: #63574a;
+  --cream: #fbfceb;
+  --card: #f7fafb;
+  --stone: #ecebe7;
+  --stone-dark: #dfddd7;
+  --ring: rgba(99, 87, 74, 0.2);
+  /* frosted glass: the wallpaper shows through, blurred and lightened so icons stay readable */
+  --glass: rgba(255, 255, 255, 0.5);
+  --glass-blur: blur(20px) saturate(1.8);
+  --glass-edge: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  --serif: "Fraunces", Georgia, serif;
+  --mono: "Courier Prime", "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--sky);
+  color: var(--ink);
+  font-family: var(--mono);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- wallpapers ---------- */
+
+.bg {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 3s ease;
+}
+
+.bg.visible { opacity: 1; }
+
+/* ---------- control bar ---------- */
+
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: calc(8px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-edge), 0 6px 24px rgba(99, 87, 74, 0.18);
+  transition: opacity 0.3s ease, transform 0.35s ease, visibility 0.35s;
+}
+
+.dock.collapsed .controls {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(28px) scale(0.92);
+}
+
+/* little chevron that hides / shows the controls */
+.toggle {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-edge), 0 3px 12px rgba(99, 87, 74, 0.16);
+  color: var(--ink);
+  cursor: pointer;
+  animation: bob 2.2s ease-in-out infinite;
+}
+
+.toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.35s ease;
+}
+
+.toggle:hover { background: rgba(255, 255, 255, 0.85); }
+.toggle:focus-visible { outline: 2px dashed var(--ink); outline-offset: 2px; }
+.dock.collapsed .toggle svg { transform: rotate(180deg); }
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+
+.btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.btn:hover { background: rgba(255, 255, 255, 0.6); }
+.btn:hover svg { animation: wiggle 0.5s ease-in-out; }
+.btn:active { transform: scale(0.9); }
+.btn:focus-visible { outline: 2px dashed var(--ink); outline-offset: 2px; }
+
+.btn-play {
+  width: 54px;
+  height: 54px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 0 0 2.5px var(--ink);
+}
+
+.btn-play svg { width: 28px; height: 28px; }
+.btn-play:hover { background: rgba(255, 255, 255, 0.85); }
+.btn-play .icon-pause { display: none; }
+.btn-play.playing .icon-play { display: none; }
+.btn-play.playing .icon-pause { display: block; }
+
+/* gentle pulse until the first press */
+.btn-play.nudge { animation: nudge 2.4s ease-in-out infinite; }
+
+.btn-gear svg { overflow: visible; }
+.btn-gear .teeth circle,
+.btn-gear .body { fill: var(--cream); }
+.btn-gear .eye { fill: var(--ink); stroke: none; }
+.btn-gear .smile { stroke-width: 1.6; }
+.btn-gear:hover svg { animation: spin 2.4s ease-in-out infinite; }
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0) scale(1); }
+  30% { transform: rotate(-6deg) scale(1.08); }
+  65% { transform: rotate(5deg) scale(1.08); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0); }
+  50% { transform: rotate(45deg) scale(1.06); }
+  100% { transform: rotate(0); }
+}
+
+@keyframes nudge {
+  0%, 100% { box-shadow: inset 0 0 0 2.5px var(--ink), 0 0 0 0 rgba(99, 87, 74, 0.25); }
+  50% { box-shadow: inset 0 0 0 2.5px var(--ink), 0 0 0 8px rgba(99, 87, 74, 0); }
+}
+
+/* ---------- full screen ---------- */
+
+/* no background, just a soft shadow so the white icon shows on light and dark pictures */
+.fullscreen {
+  position: fixed;
+  top: calc(10px + env(safe-area-inset-top));
+  right: calc(10px + env(safe-area-inset-right));
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.fullscreen[hidden] { display: none; }
+
+.fullscreen svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+
+.fullscreen:hover, .fullscreen:focus-visible { opacity: 1; }
+.fullscreen:active { transform: scale(0.9); }
+.fullscreen:focus-visible { outline: 2px dashed #fff; outline-offset: 2px; border-radius: 8px; }
+.fullscreen .icon-exit { display: none; }
+.fullscreen.active .icon-enter { display: none; }
+.fullscreen.active .icon-exit { display: block; }
+
+/* ---------- artist credit ---------- */
+
+.palette {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.palette circle { fill: currentColor; stroke: none; }
+
+/* ---------- settings modal ---------- */
+
+dialog {
+  width: min(340px, calc(100vw - 32px));
+  padding: 28px 28px 32px;
+  border: 0;
+  border-radius: 28px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 12px 48px rgba(99, 87, 74, 0.22);
+  text-align: center;
+}
+
+dialog[open] { animation: pop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+dialog::backdrop {
+  background: rgba(234, 242, 245, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.92) translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.bear {
+  width: 52px;
+  height: 44px;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+}
+
+.bear ellipse { fill: var(--ink); stroke: none; }
+
+dialog h1 {
+  margin: 4px 0 18px;
+  font-family: var(--serif);
+  font-size: 44px;
+  font-weight: 600;
+  font-variation-settings: "SOFT" 100;
+  line-height: 1;
+}
+
+dialog label,
+dialog .unit {
+  display: block;
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+}
+
+.setting + .setting {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px dashed rgba(99, 87, 74, 0.18);
+}
+
+/* pill on/off switch for keeping the screen awake */
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+
+.switch input {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex: none;
+  width: 46px;
+  height: 26px;
+  margin: 0;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.switch input::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ink);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.switch input:checked { background: var(--ink); }
+.switch input:checked::before { transform: translateX(20px); background: #fff; }
+.switch input:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--ring); }
+
+/* the sleep timer greys out while the switch is off */
+.timer {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  transition: opacity 0.2s ease;
+}
+
+.timer:disabled { opacity: 0.4; pointer-events: none; }
+
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px 0 6px;
+}
+
+.step {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--stone);
+  color: var(--ink);
+  font: 22px/1 var(--mono);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.step:hover { background: var(--stone-dark); }
+.step:active { transform: scale(0.9); }
+.step-5 { font-size: 15px; letter-spacing: -0.02em; }
+
+/* keep all five stepper pieces on one line on small phones */
+@media (max-width: 380px) {
+  .stepper { gap: 5px; }
+  .step { width: 34px; height: 34px; }
+  .stepper input { width: 68px; }
+}
+
+.stepper input {
+  width: 84px;
+  padding: 6px 0;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font: 600 26px/1 var(--serif);
+  font-variation-settings: "SOFT" 100;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.stepper input::-webkit-outer-spin-button,
+.stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.stepper input:focus { outline: none; box-shadow: 0 0 0 4px var(--ring); }
+
+.artist {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  margin: 2px auto 0;
+  color: var(--ink);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-decoration: underline dotted;
+  text-underline-offset: 4px;
+}
+
+.artist svg { width: 20px; height: 20px; }
+.artist:hover svg { animation: wiggle 0.5s ease-in-out; }
+.artist:focus-visible { outline: 2px dashed var(--ink); outline-offset: 4px; border-radius: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bg { transition-duration: 0.5s; }
+  .btn:hover svg, .btn-gear:hover svg, .btn-play.nudge, .toggle, dialog[open],
+  .artist:hover svg { animation: none; }
+}
