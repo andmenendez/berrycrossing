@@ -22,6 +22,9 @@ const keepAwakeInput = $("keep-awake");
 const awakeTimer = $("awake-timer");
 const awakeInput = $("awake-minutes");
 
+// iPhones and iPads only show :active (the press-down on buttons) once the page listens for touches
+document.body.addEventListener("touchstart", () => {}, { passive: true });
+
 /* ---------- saved settings ---------- */
 
 function clampMinutes(value, fallback = DEFAULT_MINUTES) {
