@@ -424,8 +424,41 @@ dialog .unit {
 }
 .artist:focus-visible { outline: 2px dashed var(--ink); outline-offset: 4px; border-radius: 6px; }
 
+/* ---------- download ---------- */
+
+.download {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--stone);
+  color: var(--ink);
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.download svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (hover: hover) {
+  .download:hover { background: var(--stone-dark); }
+  .download:hover svg { animation: wiggle 0.5s ease-in-out; }
+}
+.download:active { transform: scale(0.95); }
+.download:focus-visible { outline: 2px dashed var(--ink); outline-offset: 4px; }
+
 @media (prefers-reduced-motion: reduce) {
   .bg { transition-duration: 0.5s; }
   .btn:hover svg, .btn-gear:hover svg, .btn-play.nudge, .toggle, dialog[open],
-  .artist:hover svg { animation: none; }
+  .artist:hover svg, .download:hover svg { animation: none; }
 }
