@@ -1,3 +1,4 @@
 .DS_Store
-# original full-size audio; the site uses the smaller audio/rainy-day.m4a
+# audio is served from Cloudflare R2 (see <audio src> in index.html); don't deploy local copies
 Animal Crossing Rainy Day Music with Rain Sounds.m4a
+audio/
