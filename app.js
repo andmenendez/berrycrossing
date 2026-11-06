@@ -9,8 +9,10 @@ const IMAGES = [
 const INTERVAL_KEY = "berrycrossing.intervalMinutes";
 const KEEP_AWAKE_KEY = "berrycrossing.keepAwake";
 const AWAKE_MINUTES_KEY = "berrycrossing.awakeMinutes";
+const VOLUME_KEY = "berrycrossing.volume";
 const DEFAULT_MINUTES = 30;
 const DEFAULT_AWAKE_MINUTES = 60;
+const DEFAULT_VOLUME = 100;
 const SKIP_SECONDS = 15;
 
 const $ = (id) => document.getElementById(id);
@@ -21,6 +23,7 @@ const intervalInput = $("interval");
 const keepAwakeInput = $("keep-awake");
 const awakeTimer = $("awake-timer");
 const awakeInput = $("awake-minutes");
+const volumeInput = $("volume");
 
 // iPhones and iPads only show :active (the press-down on buttons) once the page listens for touches
 document.body.addEventListener("touchstart", () => {}, { passive: true });
@@ -54,6 +57,8 @@ function loadMinutes(key, fallback) {
 let pictureMinutes = loadMinutes(INTERVAL_KEY, DEFAULT_MINUTES);
 let keepAwake = readSetting(KEEP_AWAKE_KEY) !== "false"; // on unless switched off
 let awakeMinutes = loadMinutes(AWAKE_MINUTES_KEY, DEFAULT_AWAKE_MINUTES);
+const storedVolume = Math.round(Number(readSetting(VOLUME_KEY) ?? DEFAULT_VOLUME));
+let volume = Number.isFinite(storedVolume) ? Math.min(100, Math.max(0, storedVolume)) : DEFAULT_VOLUME;
 
 /* ---------- wallpapers ---------- */
 
@@ -120,6 +125,19 @@ audio.addEventListener("pause", () => {
   playBtn.setAttribute("aria-label", "play");
   playBtn.title = "play";
 });
+
+// loudness follows the square of the slider, so the whole slider feels useful instead of just the bottom end
+function syncVolume() {
+  audio.volume = (volume / 100) ** 2;
+  volumeInput.style.setProperty("--fill", `${volume}%`);
+}
+
+syncVolume();
+
+// iPhones and iPads leave volume to the side buttons and ignore it from the page, so the slider hides there
+const probe = new Audio();
+probe.volume = 0.5;
+$("volume-setting").hidden = probe.volume !== 0.5;
 
 playBtn.addEventListener("click", togglePlay);
 $("restart").addEventListener("click", () => { audio.currentTime = 0; });
@@ -220,6 +238,7 @@ function fillSettings() {
   keepAwakeInput.checked = keepAwake;
   awakeInput.value = awakeMinutes;
   awakeTimer.disabled = !keepAwake;
+  volumeInput.value = volume;
 }
 
 // changes take effect right away; a cleared box keeps the current value until something is typed
@@ -240,6 +259,11 @@ function applySettings() {
     saveSetting(AWAKE_MINUTES_KEY, awakeMinutes);
     saveSetting(KEEP_AWAKE_KEY, keepAwake);
     resetSleepTimer();
+  }
+  if (Number(volumeInput.value) !== volume) {
+    volume = Number(volumeInput.value);
+    saveSetting(VOLUME_KEY, volume);
+    syncVolume();
   }
 }
 

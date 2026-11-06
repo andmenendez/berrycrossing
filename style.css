@@ -405,6 +405,83 @@ dialog .unit {
 .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .stepper input:focus { outline: none; box-shadow: 0 0 0 4px var(--ring); }
 
+/* ---------- volume ---------- */
+
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.volume svg {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* the part of the track left of the knob fills in with ink; app.js keeps --fill in step with the value */
+.volume input {
+  --fill: 100%;
+  flex: 1;
+  min-width: 0;
+  height: 28px;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.volume input::-webkit-slider-runnable-track {
+  box-sizing: border-box;
+  height: 12px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--ink) var(--fill), #fff var(--fill));
+}
+
+.volume input::-moz-range-track {
+  box-sizing: border-box;
+  height: 12px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--ink) var(--fill), #fff var(--fill));
+}
+
+.volume input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  margin-top: -8px; /* centres the knob on the track's 8px inside */
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--cream);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.volume input::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--cream);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.volume input:active::-webkit-slider-thumb { transform: scale(1.12); }
+.volume input:active::-moz-range-thumb { transform: scale(1.12); }
+.volume input:focus { outline: none; }
+.volume input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px var(--ring); }
+.volume input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px var(--ring); }
+
 .artist {
   display: flex;
   align-items: center;
